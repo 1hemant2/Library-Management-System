@@ -29,7 +29,6 @@ export const createUser = async (req: Request, res: Response) => {
     } catch (error: any) {
         const statusCode = error.statusCode || StatusCodes.INTERNAL_SERVER_ERROR;
         const message = error.message || "Something went wrong";
-        // console.log(message, statusCode);
         res.status(statusCode).send({ message: message, success: false });
     }
 }

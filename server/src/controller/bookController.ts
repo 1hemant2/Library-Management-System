@@ -73,7 +73,13 @@ export const deleteBook = async (req: Request, res: Response) => {
 
 export const getBooks = async (req: Request, res: Response) => {
     try {
-        const book = await Book.find({});
+        const pageLength = 4;
+        const pageNo: number = Number(req.params.pageNo);
+        if (isNaN(pageNo) || pageNo < 1) {
+            return res.status(400).send({ message: 'Invalid page number' });
+        }
+        const skip = (pageNo - 1) * pageLength;
+        const book = await Book.find().skip(skip).limit(pageLength);
         if (book.length === 0) {
             throw { message: "book inventory is empty", satatusCode: StatusCodes.NOT_FOUND }
         } else {
@@ -86,3 +92,20 @@ export const getBooks = async (req: Request, res: Response) => {
     }
 }
 
+export const searchBook = async (req: Request, res: Response) => {
+    try {
+        const input = req.body;
+        if (Object.keys(input).length > 0) {
+            throw { statusCode: StatusCodes.BAD_REQUEST, message: "input is required" };
+        }
+        const data = await Book.find({ name: input.name });
+        if (!data) {
+            throw { message: "No book exist", statusCode: StatusCodes.NOT_FOUND };
+        }
+        res.status(StatusCodes.OK).send({ message: "Book found", data: data, success: true });
+    } catch (error: any) {
+        const statusCode = error.statusCode || StatusCodes.INTERNAL_SERVER_ERROR;
+        const message = error.message || "Something went wrong";
+        res.status(statusCode).send({ message: message, success: false });
+    }
+}
