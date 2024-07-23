@@ -39,8 +39,7 @@ interface AdminProperties {
 export const createAdmin = async (req: Request, res: Response) => {
     try {
         const input: AdminProperties = req.body;
-        console.log(input);
-        if (!input) {
+        if (Object.keys(input).length === 0) {
             throw { statusCode: StatusCodes.BAD_REQUEST, message: "Body should not be empty" };
         }
 
@@ -101,8 +100,7 @@ interface getAdminProperties {
 export const getAdmin = async (req: Request, res: Response) => {
     try {
         const input: getAdminProperties = req.body;
-        if (input) {
-
+        if (Object.keys(input).length > 0) {
             const existingAdmin = await Admin.findOne({ $or: [{ email: input.email }, { username: input.username }] });
             if (!existingAdmin) {
                 throw { message: "admin doen't exist", statusCode: StatusCodes.NOT_FOUND };

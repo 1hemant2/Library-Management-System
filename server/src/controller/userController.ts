@@ -13,21 +13,25 @@ interface userProperty {
 export const createUser = async (req: Request, res: Response) => {
     try {
         const input: userProperty = req.body;
-        if (input) {
+        if (Object.keys(input).length > 0) {
             const user = await User.findOne({ $or: [{ email: input.email }, { username: input.username }] });
             if (!user) {
                 const newUser = new User(input);
                 await newUser.save();
-                return res.send({ success: true, message: "User created succssfully" })
+                return res.status(StatusCodes.CREATED).send({ success: true, message: "User created succssfully" })
             } else {
                 throw { statusCode: StatusCodes.CONFLICT, message: 'User already exists' };
             }
         } else {
-            throw { statusCode: StatusCodes.NOT_FOUND, message: 'Input is required' }
+            throw { statusCode: StatusCodes.BAD_REQUEST, message: 'Input is required' }
         }
     } catch (error: any) {
         const statusCode = error.statusCode || StatusCodes.INTERNAL_SERVER_ERROR;
         const message = error.message || "Something went wrong";
-        res.status(statusCode).send(message);
+        console.log(message, statusCode);
+        res.status(statusCode).send({ message: message, success: false });
     }
 }
+
+
+

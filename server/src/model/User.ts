@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose, { Schema } from "mongoose";
 
 const userSchema = new mongoose.Schema({
     username: {
@@ -23,6 +23,10 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    books: [{
+        type: Schema.Types.ObjectId,
+        ref: 'LibraryTransaction'
+    }]
 },
     { timestamps: true }
 )

@@ -148,16 +148,16 @@ describe('Admin Controller - getAdmin', () => {
         });
     });
 
-    // it('should return 400 if body is empty', async () => {
-    //     const req = mockRequest({ body: {} });
-    //     const res = mockResponse();
-    //     await getAdmin(req as Request, res as Response);
-    //     expect(res.status).toHaveBeenCalledWith(StatusCodes.BAD_REQUEST);
-    //     expect(res.send).toHaveBeenCalledWith({
-    //         message: 'Body should not be empty',
-    //         success: false
-    //     });
-    // });
+    it('should return 400 if body is empty', async () => {
+        const req = mockRequest({ body: {} });
+        const res = mockResponse();
+        await getAdmin(req as Request, res as Response);
+        expect(res.status).toHaveBeenCalledWith(StatusCodes.BAD_REQUEST);
+        expect(res.send).toHaveBeenCalledWith({
+            message: 'Body should not be empty',
+            success: false
+        });
+    });
 
     it('should return 500 if an unexpected error occurs', async () => {
         const req = mockRequest({
