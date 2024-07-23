@@ -13,6 +13,7 @@ interface userProperty {
 export const createUser = async (req: Request, res: Response) => {
     try {
         const input: userProperty = req.body;
+        console.log(input);
         if (Object.keys(input).length > 0) {
             const user = await User.findOne({ $or: [{ email: input.email }, { username: input.username }] });
             if (!user) {
@@ -28,7 +29,7 @@ export const createUser = async (req: Request, res: Response) => {
     } catch (error: any) {
         const statusCode = error.statusCode || StatusCodes.INTERNAL_SERVER_ERROR;
         const message = error.message || "Something went wrong";
-        console.log(message, statusCode);
+        // console.log(message, statusCode);
         res.status(statusCode).send({ message: message, success: false });
     }
 }

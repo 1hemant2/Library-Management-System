@@ -10,7 +10,8 @@ const bookSchema = new mongoose.Schema({
         required: true,
     },
     currentAvailability: {
-        type: Number
+        type: Number,
+        default: 0
     }
 
 },

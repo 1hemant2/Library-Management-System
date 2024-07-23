@@ -23,7 +23,7 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    books: [{
+    transaction: [{
         type: Schema.Types.ObjectId,
         ref: 'LibraryTransaction'
     }]

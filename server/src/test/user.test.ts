@@ -9,7 +9,7 @@ describe('User Controller -createUser', () => {
     afterEach(() => {
         jest.clearAllMocks();
     })
-    it('it should create a user', async () => {
+    it('it should return 201 if  user  created', async () => {
         const req = mockRequest({
             body: {
                 username: "testu1",
