@@ -42,7 +42,6 @@ export const createAdmin = async (req: Request, res: Response) => {
         if (Object.keys(input).length === 0) {
             throw { statusCode: StatusCodes.BAD_REQUEST, message: "Body should not be empty" };
         }
-
         const existingAdmin = await Admin.findOne({ $or: [{ email: input.email }, { username: input.username }] });
 
         if (!existingAdmin) {
@@ -92,16 +91,15 @@ export const createAdmin = async (req: Request, res: Response) => {
  */
 
 interface getAdminProperties {
-    username?: string;
+    admin?: string;
     password: string;
-    email?: string;
 }
 
 export const getAdmin = async (req: Request, res: Response) => {
     try {
         const input: getAdminProperties = req.body;
         if (Object.keys(input).length > 0) {
-            const existingAdmin = await Admin.findOne({ $or: [{ email: input.email }, { username: input.username }] });
+            const existingAdmin = await Admin.findOne({ $or: [{ email: input.admin }, { username: input.admin }] });
             if (!existingAdmin) {
                 throw { message: "admin doen't exist", statusCode: StatusCodes.NOT_FOUND };
             }
@@ -116,7 +114,7 @@ export const getAdmin = async (req: Request, res: Response) => {
                 const token = jwt.sign(adminPayload, secretKey, { expiresIn: '30d' });
                 return res.status(StatusCodes.OK).send({ message: 'login successful', token, success: true });
             } else {
-                throw { message: 'Invalid email or password.', statusCode: StatusCodes.UNAUTHORIZED }
+                throw { message: 'Invalid credential.', statusCode: StatusCodes.UNAUTHORIZED }
             }
         } else {
             throw { statusCode: StatusCodes.BAD_REQUEST, message: "Body should not be empty" };

@@ -1,36 +1,36 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
+import { addBookApi } from '../api/bookApi';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
-interface newBook {
-    currentAvailability: number;
+interface NewBook {
+    currentAvailability: string;
     name: string;
     author: string;
 }
+
 const Card6: React.FC = () => {
     const navigate = useNavigate();
-    const [data, setData] = useState<newBook>(
-        {
-            currentAvailability: 0,
-            name: '',
-            author: ''
-        }
-    );
+    const [data, setData] = useState<NewBook>({
+        currentAvailability: '',
+        name: '',
+        author: ''
+    });
 
     /**
      * Handles input change events and updates the form data state.
      * 
      * @param {React.ChangeEvent<HTMLInputElement>} e - The input change event
      */
-
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
         setData(prevData => ({
             ...prevData,
-            [name]: value
+            [name]: name === 'currentAvailability' ? Number(value) : value
         }));
     };
-
 
     /**
      * Handles form submission, calls the register API, and manages navigation and error handling.
@@ -39,60 +39,70 @@ const Card6: React.FC = () => {
      */
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        console.log(data);
         try {
-            // const res = await registerApi(data);
-            // console.log(res);
-            // if (!res.success) {
-            //     throw { message: res.message };
-            // } else {
-            //     navigate('/pt/login');
-            // }
+            const res = await addBookApi(data);
+            if (res.success) {
+                setData({
+                    currentAvailability: '',
+                    name: '',
+                    author: ''
+                });
+                toast.success(res.message, {
+                    position: "top-center",
+                });
+            } else {
+                throw res;
+            }
         } catch (error: any) {
-            // toast.error(error.message, {
-            //     position: "top-center",
-            // });
+            console.log(error);
+            toast.error(error.message, {
+                position: "top-center",
+            });
         }
     };
+
     return (
         <div>
+            <ToastContainer />
             <div className='border border-gray-300 bg-white rounded-lg shadow-lg sm:p-16 pt-16 pb-16 flex flex-col max-w-md w-full space-y-6'>
-                <h2 className="text-2xl font-bold text-center">Patient Sign-Up</h2>
+                <h2 className="text-2xl font-bold text-center">Add new Book</h2>
                 <form onSubmit={handleSubmit} className='flex flex-col space-y-6 p-4'>
-
                     <input
                         type="text"
                         className='border border-gray-300 rounded-lg p-2 w-full'
                         placeholder="Book name"
                         name='name'
+                        value={data.name}
                         onChange={handleChange}
-                        title="Please enter a valid email address."
                         required
                     />
                     <input
                         type="text"
                         className='border border-gray-300 rounded-lg p-2 w-full'
-                        placeholder="author"
+                        placeholder="Author"
                         name='author'
+                        value={data.author}
                         onChange={handleChange}
                         required
-                        title="author name"
                     />
                     <input
                         type="number"
                         className='border border-gray-300 rounded-lg p-2 w-full'
-                        placeholder="current Avilablity"
-                        name='availability'
+                        placeholder="Current Availability"
+                        name='currentAvailability'
+                        value={data.currentAvailability}
                         onChange={handleChange}
                         required
-                        title="number avilable book"
                     />
                     <button type='submit' className='bg-black text-white py-2 px-4 rounded-lg hover:bg-slate-700'>
-                        Add new Book
+                        Add New Book
                     </button>
                 </form>
 
-                <div className='ml-8'>Already have account?<span className='ml-2 text-blue-500 cursor-pointer' onClick={() => navigate('/pt/login')}>Login</span> </div>
+                <div className='ml-8'>
+                    Already have an account?
+                    <span className='ml-2 text-blue-500 cursor-pointer' onClick={() => navigate('/pt/login')}>Login</span>
+                </div>
             </div>
         </div>
     );

@@ -1,6 +1,6 @@
 import React from 'react';
-import SearchBar from '../component/SearchBar';
-import Footer from '../component/Footer';
+import SearchBar from '../../component/SearchBar';
+import Footer from '../../component/Footer';
 
 const History: React.FC = () => {
     const searchBook = (input: string) => {

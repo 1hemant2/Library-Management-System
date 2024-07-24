@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
-import Card1 from '../component/Card1';
-import SearchBar from '../component/SearchBar';
-import Footer from '../component/Footer';
-import NavBar from '../component/NavBar';
-import Modal from '../component/Modal';
-import Card5 from '../component/Card5';
-import Card6 from '../component/Card6';
-import Pagination from '../component/Pagination';
+import Card1 from '../../component/Card1';
+import SearchBar from '../../component/SearchBar';
+import Footer from '../../component/Footer';
+import NavBar from '../../component/NavBar';
+import Modal from '../../component/Modal';
+import Card5 from '../../component/Card5';
+import Card6 from '../../component/Card6';
+import Pagination from '../../component/Pagination';
 
 const Home: React.FC = () => {
     const [isNavbar, setIsNavbar] = useState(false);

@@ -1,14 +1,13 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
-// import { loginApi } from '../../api/doctorApi';
-// import { useUserDetils } from '../../hooks/useCurrentUser';
-// import { ToastContainer, toast } from 'react-toastify';
+import { loginApi } from '../../api/adminApi';
+import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 
 interface LoginData {
-    email: string;
+    admin: string;
     password: string;
 }
 
@@ -21,7 +20,7 @@ const Login: React.FC = () => {
     const navigate = useNavigate();
 
     const [data, setData] = useState<LoginData>({
-        email: '',
+        admin: '',
         password: ''
     });
     // const user = useUserDetils();
@@ -45,34 +44,34 @@ const Login: React.FC = () => {
     * Handles form submission and login process.
     * @param {React.FormEvent<HTMLFormElement>} e - The form event.
     */
-    // const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    //     e.preventDefault();
-    //     try {
-    //         const res = await loginApi(data);
-    //         if (!res.success) {
-    //             throw { message: res.message };
-    //         } else {
-    //             localStorage.setItem('token', res.token);
-    //             navigate('/dr');
-    //         }
-    //     } catch (error: any) {
-    //         toast.error(error.message, {
-    //             position: "top-center",
-    //         });
-    //     }
-    // };
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        try {
+            const res = await loginApi(data);
+            if (!res.success) {
+                throw { message: res.message };
+            } else {
+                localStorage.setItem('token', res.token);
+                navigate('/admin');
+            }
+        } catch (error: any) {
+            toast.error(error.message, {
+                position: "top-center",
+            });
+        }
+    };
 
     return (
         <div className="flex justify-center items-center h-screen bg-blue p-4 sm:p-00">
-            {/* <ToastContainer /> */}
+            <ToastContainer />
             <div className="border border-gray-300 bg-white rounded-lg shadow-lg sm:p-8 pt-16 pb-16 flex flex-col max-w-md w-full space-y-6">
                 <h2 className="text-2xl font-bold text-center">Admin Login</h2>
-                <form className="flex flex-col space-y-6 p-4">
+                <form className="flex flex-col space-y-6 p-4" onSubmit={handleSubmit}>
                     <input
-                        type="email"
-                        name="email"
+                        type="text"
+                        name="admin"
                         className="border border-gray-300 rounded-lg p-2 w-full"
-                        placeholder="Email or username"
+                        placeholder="email or username"
                         onChange={handleChange}
                     />
                     <input

@@ -1,12 +1,11 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import HomeAdmin from "./admin/Home";
-import Home from "./user/Home";
-import Operation from "./admin/Operation";
-import History from "./user/History";
-import Login from "./admin/Login";
-import Register from "./admin/Register";
+import HomeAdmin from "./pages/admin/Home";
+import Home from "./pages/user/Home";
+import Operation from "./pages/admin/Operation";
+import History from "./pages/user/History";
+import Login from "./pages/admin/Login";
+import Register from "./pages/admin/Register";
 function App() {
-
   return (
     <>
       <BrowserRouter>

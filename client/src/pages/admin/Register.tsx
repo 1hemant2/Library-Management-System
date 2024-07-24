@@ -1,15 +1,16 @@
 import React, { useState } from 'react';
-// import { registerApi } from '../../api/doctorApi';
 import { useNavigate } from 'react-router-dom';
-// import { ToastContainer, toast } from 'react-toastify';
+import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { registerApi } from '../../api/adminApi';
 
 interface RegisterData {
-    firstName: string;
-    lastName: string;
-    email: string;
-    password: string;
-    specialty: string;
+    "username": string,
+    "firstName": string,
+    "lastName": string,
+    "password": string,
+    "email": string,
+    "contactNumber": string
 }
 
 
@@ -27,7 +28,8 @@ const Register: React.FC = () => {
             lastName: '',
             email: '',
             password: '',
-            specialty: ''
+            username: '',
+            contactNumber: ''
         }
     );
 
@@ -50,28 +52,29 @@ const Register: React.FC = () => {
      * Handles form submission and registration process.
      * @param {React.FormEvent<HTMLFormElement>} e - The form event.
      */
-    // const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    //     e.preventDefault();
-    //     try {
-    //         const res = await registerApi(data);
-    //         if (!res.success) {
-    //             throw { message: res.message };
-    //         } else {
-    //             navigate('/dr/login');
-    //         }
-    //     } catch (error: any) {
-    //         toast.error(error.message, {
-    //             position: "top-center",
-    //         });
-    //     }
-    // };
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        try {
+            const res = await registerApi(data);
+            if (!res.success) {
+                throw { message: res.message };
+            } else {
+                navigate('/admin/login');
+            }
+        } catch (error: any) {
+            console.log(error);
+            toast.error(error.message, {
+                position: "top-center",
+            });
+        }
+    };
 
     return (
         <div className="flex justify-center items-center h-screen bg-blue p-4 sm:p-0">
-            {/* <ToastContainer /> */}
+            <ToastContainer />
             <div className='border border-gray-300 bg-white rounded-lg shadow-lg sm:p-8 pt-16 pb-16 flex flex-col max-w-md w-full space-y-6'>
                 <h2 className="text-2xl font-bold text-center">Admin Signup</h2>
-                <form className='flex flex-col space-y-6 p-4'>
+                <form className='flex flex-col space-y-6 p-4' onSubmit={handleSubmit}>
                     <div className='flex space-x-4'>
                         <input type="text" className='border border-gray-300 rounded-lg p-2 w-full' placeholder="First Name" name='firstName' onChange={handleChange} required />
                         <input type="text" className='border border-gray-300 rounded-lg p-2 w-full' placeholder="Last Name" name='lastName' onChange={handleChange} required />
@@ -92,13 +95,13 @@ const Register: React.FC = () => {
                         name='password'
                         onChange={handleChange}
                         required
-                        pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}"
-                        minLength={8}
+                        // pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}"
+                        // minLength={8}
                         title="Password must be at least 8 characters long, include one uppercase letter, one lowercase letter, and one number."
                     />
 
-                    <input type="text" className='border border-gray-300 rounded-lg p-2 w-full' placeholder="contact number" name='contact' onChange={handleChange} required />
-                    <button type='submit' className='bg-black text-white py-2 px-4 rounded-lg hover:bg-slate-700 '>Register</button>
+                    <input type="text" className='border border-gray-300 rounded-lg p-2 w-full' placeholder="contact number" name='contactNumber' onChange={handleChange} required />
+                    <button type='submit' className='bg-black text-white py-2 px-4 rounded-lg hover:bg-slate-700 ' >Register</button>
                 </form>
                 <div className='ml-8'>Already have account?<span className='ml-2 text-blue-500 cursor-pointer' onClick={() => navigate('/admin/login')}>Login</span> </div>
             </div>

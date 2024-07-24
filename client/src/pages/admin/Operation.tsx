@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import Modal from '../component/Modal';
-import Card2 from '../component/Card2';
-import Card3 from '../component/Card3';
+import Modal from '../../component/Modal';
+import Card2 from '../../component/Card2';
+import Card3 from '../../component/Card3';
 
 const Operation: React.FC = () => {
     const [isModalOpen, setIsModalOpen] = useState({

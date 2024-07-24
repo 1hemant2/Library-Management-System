@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import Card1 from '../component/Card1';
-import SearchBar from '../component/SearchBar';
-import Footer from '../component/Footer';
+import Card1 from '../../component/Card1';
+import SearchBar from '../../component/SearchBar';
+import Footer from '../../component/Footer';
 
-import Pagination from '../component/Pagination';
+import Pagination from '../../component/Pagination';
 
 const Home: React.FC = () => {
 

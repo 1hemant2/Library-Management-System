@@ -8,10 +8,12 @@ app.use(cors());
 app.use(express.json());
 import adminRoute from "../src/routes/adminRoute";
 import userRoute from "../src/routes/userRoute";
+import bookRoute from "../src/routes/bookRoute";
 
 
 app.use("/admin", adminRoute);
 app.use("/user", userRoute);
+app.use("/book", bookRoute);
 
 
 const PORT = process.env.PORT || 8;
