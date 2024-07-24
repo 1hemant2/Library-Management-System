@@ -30,7 +30,6 @@ const Home: React.FC = () => {
     }
     return (
         <div>
-
             <div className='min-h-screen'>
                 {
                     isNavbar &&
