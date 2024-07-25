@@ -4,10 +4,11 @@ import SearchBar from '../../component/SearchBar';
 import Footer from '../../component/Footer';
 
 import Pagination from '../../component/Pagination';
-import { getBookApi } from '../../api/bookApi';
+import { getBookApi, searchBookApi } from '../../api/bookApi';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useNavigate } from 'react-router-dom';
+import img1 from '../../assets/—Pngtree—not found outline icon vectors_5053765.png'
 
 const Home: React.FC = () => {
     const [currentPage, setCurrentPage] = useState(1);
@@ -15,8 +16,22 @@ const Home: React.FC = () => {
     const [data, setData] = useState([]);
     const navigate = useNavigate();
 
+
+    const handleSearch = async (input: string) => {
+        try {
+            const res = await searchBookApi(input);
+            if (res.success) {
+                setData(res.data);
+                setTotalPage(res.totalPage)
+            }
+        } catch (error: any) {
+            toast.error(error.message, {
+                position: "top-center",
+            });
+        }
+    }
     const searchBook = (input: string) => {
-        console.log(input);
+        handleSearch(input);
     }
     const changePages = (page: number) => {
         setCurrentPage(page);
@@ -44,6 +59,7 @@ const Home: React.FC = () => {
     return (
         <div>
             <ToastContainer />
+            <button type='submit' className='bg-black text-white py-2 px-4 rounded-lg hover:bg-slate-700 m-5' onClick={() => navigate('/admin/login')}>continue as Admin</button>
             <button type='submit' className='bg-black text-white py-2 px-4 rounded-lg hover:bg-slate-700 m-5' onClick={() => navigate('/history')}>Your history</button>
             <div className='min-h-screen'>
                 <div>
@@ -55,6 +71,14 @@ const Home: React.FC = () => {
                             <Card1 name={d.name} authorName={d.author} currenAvilibility={d.currentAvailability
                             }></Card1>
                         ))
+                    }
+                    {
+                        data.length === 0 &&
+                        <>
+                            <span className='text-2xl'>No match found</span>
+                            <img src={img1} alt="" className='w-[70%] h-[70%]' />
+                        </>
+
                     }
                 </div>
             </div>

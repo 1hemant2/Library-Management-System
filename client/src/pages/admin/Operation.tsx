@@ -67,6 +67,9 @@ const Operation: React.FC = () => {
     return (
         <div className="h-screen flex flex-col items-center justify-center bg-gradient-to-r from-gray-100 to-gray-300">
             <ToastContainer></ToastContainer>
+            <div className='fixed inset-0'>
+                <button type='submit' className='bg-black text-white py-2 px-4 rounded-lg hover:bg-slate-700 m-5' onClick={() => navigate('/admin/')}>Home</button>
+            </div>
             <div className="flex flex-col items-center mb-8">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-24 h-24 text-gray-700 mb-4">
                     <path d="M3 18.5V5C3 3.34315 4.34315 2 6 2H20C20.5523 2 21 2.44772 21 3V21C21 21.5523 20.5523 22 20 22H6.5C4.567 22 3 20.433 3 18.5ZM19 20V17H6.5C5.67157 17 5 17.6716 5 18.5C5 19.3284 5.67157 20 6.5 20H19ZM5 15.3368C5.45463 15.1208 5.9632 15 6.5 15H19V4H6C5.44772 4 5 4.44772 5 5V15.3368Z"></path>

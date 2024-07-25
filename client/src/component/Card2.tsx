@@ -3,6 +3,8 @@ import React from 'react';
 import { useState } from 'react';
 import { issueBookApi, returnBookApi } from '../api/bookApi';
 import { ToastContainer, toast } from 'react-toastify';
+import { useNavigate } from 'react-router-dom';
+
 
 interface card2Props {
     name: string;
@@ -10,6 +12,7 @@ interface card2Props {
 }
 
 const Card2: React.FC<card2Props> = ({ name, transactionType }) => {
+    const navigate = useNavigate();
     const [data, setData] = useState(
         {
             user: '',
@@ -18,11 +21,6 @@ const Card2: React.FC<card2Props> = ({ name, transactionType }) => {
         }
     );
 
-    /**
-     * Handles input change events and updates the form data state.
-     * 
-     * @param {React.ChangeEvent<HTMLInputElement>} e - The input change event
-     */
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
@@ -64,6 +62,9 @@ const Card2: React.FC<card2Props> = ({ name, transactionType }) => {
                 toast.success(res.message, {
                     position: "top-center",
                 });
+                setTimeout(() => {
+                    window.location.reload();
+                }, 3000);
             }
         } catch (error: any) {
             toast.error(error.message, {
@@ -79,6 +80,9 @@ const Card2: React.FC<card2Props> = ({ name, transactionType }) => {
                 toast.success(res.message, {
                     position: "top-center",
                 });
+                setTimeout(() => {
+                    window.location.reload();
+                }, 3000);
             }
         } catch (error: any) {
             toast.error(error.message, {

@@ -11,6 +11,8 @@ import { getBookApi } from '../../api/bookApi';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useNavigate } from 'react-router-dom';
+import img1 from '../../assets/—Pngtree—not found outline icon vectors_5053765.png'
+import { searchBookApi } from '../../api/bookApi';
 
 const Home: React.FC = () => {
     const [isNavbar, setIsNavbar] = useState(false);
@@ -22,14 +24,27 @@ const Home: React.FC = () => {
         'card5': false,
         'card6': false
     });
-    const searchBook = (input: string) => {
-        console.log(input);
-    }
 
     const handleNav = () => {
         setIsNavbar(!isNavbar);
     }
 
+    const handleSearch = async (input: string) => {
+        try {
+            const res = await searchBookApi(input);
+            if (res.success) {
+                setData(res.data);
+                setTotalPage(res.totalPage)
+            }
+        } catch (error: any) {
+            toast.error(error.message, {
+                position: "top-center",
+            });
+        }
+    }
+    const searchBook = (input: string) => {
+        handleSearch(input);
+    }
     const handleModal = (card: 'card5' | 'card6') => {
         setIsModal((prevState) => ({
             ...prevState,
@@ -104,6 +119,13 @@ const Home: React.FC = () => {
                             </div>
 
                         ))
+                    }
+                    {
+                        data.length === 0 &&
+                        <>
+                            <span className='text-2xl'>No match found</span>
+                            <img src={img1} alt="" className='w-[70%] h-[70%]' />
+                        </>
                     }
                 </div>
             </div>

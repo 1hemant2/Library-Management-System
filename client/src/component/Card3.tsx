@@ -42,6 +42,9 @@ const Card3: React.FC<Card3Props> = ({ name }) => {
                 toast.success(res.message, {
                     position: "top-center",
                 });
+                setTimeout(() => {
+                    window.location.reload();
+                }, 3000);
             }
         } catch (error: any) {
             toast.error(error.message, {

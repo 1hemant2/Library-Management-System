@@ -18,8 +18,8 @@ import jwt from 'jsonwebtoken'
  * - Handles errors and sends an appropriate response with a default `INTERNAL_SERVER_ERROR` status if no status code is provided.
  * 
  * @param {Request} req - The request object containing the admin details in the request body.
+ * @param {body} - username,firstName,lastName,password,email,contactNumber.
  * @param {Response} res - The response object used to send the result or error response.
- * 
  * @throws {Object} - Throws an error with status code `BAD_REQUEST` and a message if the email is invalid or password length is insufficient.
  * @throws {Object} - Throws an error with status code `CONFLICT` and a message if an admin with the same email or username already exists.
  * @throws {Object} - Throws an error with status code `INTERNAL_SERVER_ERROR` and a message for unexpected internal errors.
@@ -68,6 +68,7 @@ export const createAdmin = async (req: Request, res: Response) => {
         res.status(statusCode).send({ message, success: false });
     }
 };
+
 /**
  * Creates a get existing  Admin.
  * 
@@ -94,7 +95,6 @@ interface getAdminProperties {
     admin?: string;
     password: string;
 }
-
 export const getAdmin = async (req: Request, res: Response) => {
     try {
         const input: getAdminProperties = req.body;
@@ -125,3 +125,33 @@ export const getAdmin = async (req: Request, res: Response) => {
         res.status(statusCode).send({ message, success: false });
     }
 };
+
+/**
+ * @description Verifies if an admin exists in the system based on the provided ID.
+ * @param {Request} req - The Express request object, containing the body with the admin ID.
+ * @param {Response} res - The Express response object used to send the response.
+ * @returns {Promise<void>} A promise that resolves to void. Sends a response indicating whether the admin exists or an error occurred.
+ * @throws {Object} Throws an error with a message and status code if the admin does not exist or if the request body is empty.
+ * @throws {Error} Throws an internal server error if an unexpected issue occurs during execution.
+ */
+
+export const varifyAdmin = async (req: Request, res: Response) => {
+    try {
+        const input = req.body;
+        if (Object.keys(input).length > 0) {
+            const existingAdmin = await Admin.findById(input.id);
+            if (!existingAdmin) {
+                throw { message: "admin doen't exist", statusCode: StatusCodes.NOT_FOUND };
+            }
+            return res.status(StatusCodes.OK).send({ message: 'Admin exist', success: true });
+        } else {
+            throw { message: "admin doen't exist", statusCode: StatusCodes.NOT_FOUND };
+        }
+    } catch (error: any) {
+        const message = error.message || 'Something went wrong';
+        const statusCode = error.statusCode || StatusCodes.INTERNAL_SERVER_ERROR;
+        res.status(statusCode).send({ message, success: false });
+    }
+};
+
+

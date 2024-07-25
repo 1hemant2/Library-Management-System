@@ -33,3 +33,11 @@ export const loginApi = async (payload: loginPayload) => {
     }
 }
 
+export const varifyAdminApi = async () => {
+    try {
+        const res: any = await axiosInstances.get('/admin/varify');
+        return res.data;
+    } catch (error: any) {
+        return error.response.data;
+    }
+}

@@ -77,7 +77,16 @@ export const returnBookApi = async (payload: returnBookPayload) => {
 
 export const deleteBookApi = async (payload: string) => {
     try {
-        const res = await axiosInstances.delete(`/book/delete/${payload}`,)
+        const res = await axiosInstances.delete(`/book/delete/${payload}`)
+        return res.data
+    } catch (error: any) {
+        return error.response.data;
+    }
+}
+
+export const searchBookApi = async (payload: string) => {
+    try {
+        const res = await axiosInstances.get(`/book/search/${payload}`)
         return res.data
     } catch (error: any) {
         return error.response.data;

@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
-import { loginApi } from '../../api/adminApi';
+import { loginApi, varifyAdminApi } from '../../api/adminApi';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -23,10 +23,7 @@ const Login: React.FC = () => {
         admin: '',
         password: ''
     });
-    // const user = useUserDetils();
-    // if (user?.specialty) {
-    //     navigate('/dr');
-    // }
+
 
     /**
     * Handles input change and updates the state.
@@ -61,6 +58,19 @@ const Login: React.FC = () => {
         }
     };
 
+    const varify = async () => {
+        try {
+            const res = await varifyAdminApi();
+            if (res.success) {
+                navigate('/admin');
+            }
+        } catch (error) {
+
+        }
+    }
+    useEffect(() => {
+        varify();
+    }, [])
     return (
         <div className="flex justify-center items-center h-screen bg-blue p-4 sm:p-00">
             <ToastContainer />

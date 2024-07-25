@@ -14,6 +14,9 @@ const SearchBar: React.FC<SearchBarProps> = ({ placeholderValue, action, fn }) =
             case 'searchUser':
                 fn(input);
                 break;
+            case 'searchBook':
+                fn(input);
+                break;
             default:
                 break;
         }
