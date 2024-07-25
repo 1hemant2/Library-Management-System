@@ -1,0 +1,3 @@
+DATABASE_CONNECTION = mongodb+srv://hk443957:pn8CZWsDS@cluster0.sc7pue0.mongodb.net/
+PORT=8080
+SECRET_TOKEN="KL3RI-32-928)@#!a"
