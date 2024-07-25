@@ -3,7 +3,6 @@ import React from 'react';
 import { useState } from 'react';
 import { issueBookApi, returnBookApi } from '../api/bookApi';
 import { ToastContainer, toast } from 'react-toastify';
-import { useNavigate } from 'react-router-dom';
 
 
 interface card2Props {
@@ -12,7 +11,6 @@ interface card2Props {
 }
 
 const Card2: React.FC<card2Props> = ({ name, transactionType }) => {
-    const navigate = useNavigate();
     const [data, setData] = useState(
         {
             user: '',

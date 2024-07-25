@@ -1,5 +1,4 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import { addBookApi } from '../api/bookApi';
 import { ToastContainer, toast } from 'react-toastify';
@@ -12,7 +11,6 @@ interface NewBook {
 }
 
 const Card6: React.FC = () => {
-    const navigate = useNavigate();
     const [data, setData] = useState<NewBook>({
         currentAvailability: '',
         name: '',

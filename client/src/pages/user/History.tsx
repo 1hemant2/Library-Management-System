@@ -29,6 +29,7 @@ const History: React.FC = () => {
 
     return (
         <div className=" bg-gray-100 min-h-screen">
+            <ToastContainer></ToastContainer>
             <button type='submit' className='bg-black text-white py-2 px-4 rounded-lg hover:bg-slate-700 m-5' onClick={() => navigate('/')}>Home</button>
             <div className="max-w-4xl mx-auto bg-white shadow-md rounded-lg p-6 h-[600px] overflow-y-auto">
                 <h1 className="text-2xl font-bold mb-4 flex justify-center">Your transaction history</h1>
