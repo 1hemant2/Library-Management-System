@@ -1,4 +1,4 @@
-# Hospital Management Portal
+# Library Management System
 
 ## Description
 This is a Library management system to manage library 
@@ -29,7 +29,7 @@ Ensure you have the following tools installed on your system:
 ### Installation Steps
 
 1. **Clone the repository:**
-https://github.com/1hemant2/Hospital-Management.git
+https://github.com/1hemant2/Library-Management-System.git
 
 
 2. **Set up the frontend:**
@@ -62,4 +62,4 @@ After installation, you can access the application at `http://localhost:5173` (o
 For any queries, please contact [Hemant Kumar] at [hk443957@gmail.com].
 
 ## hosted site 
-https://hospital-management-1-556s.onrender.com/ 
+https://library-managers.onrender.com 
