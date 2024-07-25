@@ -13,7 +13,6 @@ interface userProperty {
 export const createUser = async (req: Request, res: Response) => {
     try {
         const input: userProperty = req.body;
-        console.log(input);
         if (Object.keys(input).length > 0) {
             const user = await User.findOne({ $or: [{ email: input.email }, { username: input.username }] });
             if (!user) {

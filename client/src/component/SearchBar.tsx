@@ -11,13 +11,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ placeholderValue, action, fn }) =
 
     function searchFn(action: string) {
         switch (action) {
-            case 'searchBook':
-                fn(input);
-                break;
-            case 'searchAvailablePatients':
-                fn(input);
-                break;
-            case 'searchAssignPatients':
+            case 'searchUser':
                 fn(input);
                 break;
             default:

@@ -99,10 +99,6 @@ const Card6: React.FC = () => {
                     </button>
                 </form>
 
-                <div className='ml-8'>
-                    Already have an account?
-                    <span className='ml-2 text-blue-500 cursor-pointer' onClick={() => navigate('/pt/login')}>Login</span>
-                </div>
             </div>
         </div>
     );

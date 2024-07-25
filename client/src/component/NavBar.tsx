@@ -1,11 +1,16 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 
 interface navProps {
     onClose: () => void;
     handleModal: (arg1: 'card5' | 'card6') => void;
 }
 const NavBar: React.FC<navProps> = ({ onClose, handleModal }) => {
-
+    const navigate = useNavigate();
+    const handleLogout = () => {
+        localStorage.removeItem('token');
+        navigate('/admin/login');
+    }
     return (
         <div className="w-64 p-4 border-r shadow-lg border text-gray-800 bg-white rounded-sm fixed top-0 left-0 z-10 h-96">
             <div className="flex justify-end"
@@ -24,7 +29,9 @@ const NavBar: React.FC<navProps> = ({ onClose, handleModal }) => {
                     <i className="ri-sticky-note-add-line"></i>
                     <span>Add Book</span>
                 </div>
-                <div className="flex items-center space-x-2 cursor-pointer hover:text-blue-500 transition-colors duration-300">
+                <div className="flex items-center space-x-2 cursor-pointer hover:text-blue-500 transition-colors duration-300"
+                    onClick={handleLogout}
+                >
                     <i className="ri-logout-circle-r-line"></i>
                     <span>Logout</span>
                 </div>

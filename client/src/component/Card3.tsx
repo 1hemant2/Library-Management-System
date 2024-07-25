@@ -1,18 +1,15 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
-
-interface RegisterData {
-    currentAvailability: 0;
+import { bookAvailablityApi } from '../api/bookApi';
+import { ToastContainer, toast } from 'react-toastify';
+interface Card3Props {
     name: string;
-
 }
-const Card3: React.FC = () => {
-    const navigate = useNavigate();
-    const [data, setData] = useState<RegisterData>(
+const Card3: React.FC<Card3Props> = ({ name }) => {
+    const [data, setData] = useState(
         {
-            currentAvailability: 0,
-            name: '',
+            currentAvailability: '',
+            name: name,
         }
     );
 
@@ -38,44 +35,41 @@ const Card3: React.FC = () => {
      */
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        console.log(data);
         try {
-            // const res = await registerApi(data);
-            // console.log(res);
-            // if (!res.success) {
-            //     throw { message: res.message };
-            // } else {
-            //     navigate('/pt/login');
-            // }
+            const res = await bookAvailablityApi(data);
+            console.log(res);
+            if (res.success) {
+                toast.success(res.message, {
+                    position: "top-center",
+                });
+            }
         } catch (error: any) {
-            // toast.error(error.message, {
-            //     position: "top-center",
-            // });
+            toast.error(error.message, {
+                position: "top-center",
+            });
         }
     };
     return (
         <div>
+            <ToastContainer></ToastContainer>
             <div className='border border-gray-300 bg-white rounded-lg shadow-lg sm:p-16 pt-16 pb-16 flex flex-col max-w-md w-full space-y-6'>
-                <h2 className="text-2xl font-bold text-center">Patient Sign-Up</h2>
+                <h2 className="text-2xl font-bold text-center">Change Availablity</h2>
                 <form onSubmit={handleSubmit} className='flex flex-col space-y-6 p-4'>
-                    {/* <div className='flex space-x-4'>
-                        <input type="text" className='border border-gray-300 rounded-lg p-2 w-full' placeholder="First Name" name='firstName' onChange={handleChange} />
-                        <input type="text" className='border border-gray-300 rounded-lg p-2 w-full' placeholder="Last Name" name='lastName' onChange={handleChange} />
-                    </div> */}
-
                     <input
                         type="text"
                         className='border border-gray-300 rounded-lg p-2 w-full'
                         placeholder="Book name"
-                        name='email'
+                        name='name'
+                        value={name}
                         onChange={handleChange}
                         title="Please enter a valid email address."
                         required
+                        disabled
                     />
                     <input
                         type="number"
                         className='border border-gray-300 rounded-lg p-2 w-full'
-                        placeholder="Password "
+                        placeholder="current avilablity "
                         name='currentAvailability'
                         onChange={handleChange}
                         required
@@ -86,7 +80,6 @@ const Card3: React.FC = () => {
                     </button>
                 </form>
 
-                <div className='ml-8'>Already have account?<span className='ml-2 text-blue-500 cursor-pointer' onClick={() => navigate('/pt/login')}>Login</span> </div>
             </div>
         </div>
     );

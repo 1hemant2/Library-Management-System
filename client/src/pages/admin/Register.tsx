@@ -62,7 +62,7 @@ const Register: React.FC = () => {
                 navigate('/admin/login');
             }
         } catch (error: any) {
-            console.log(error);
+            // console.log(error);
             toast.error(error.message, {
                 position: "top-center",
             });

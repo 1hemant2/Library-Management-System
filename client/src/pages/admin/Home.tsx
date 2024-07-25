@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Card1 from '../../component/Card1';
 import SearchBar from '../../component/SearchBar';
 import Footer from '../../component/Footer';
@@ -7,9 +7,17 @@ import Modal from '../../component/Modal';
 import Card5 from '../../component/Card5';
 import Card6 from '../../component/Card6';
 import Pagination from '../../component/Pagination';
+import { getBookApi } from '../../api/bookApi';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { useNavigate } from 'react-router-dom';
 
 const Home: React.FC = () => {
     const [isNavbar, setIsNavbar] = useState(false);
+    const [currentPage, setCurrentPage] = useState(1);
+    const [totalPage, setTotalPage] = useState(1);
+    const [data, setData] = useState([]);
+    const navigate = useNavigate();
     const [isModal, setIsModal] = useState({
         'card5': false,
         'card6': false
@@ -28,8 +36,36 @@ const Home: React.FC = () => {
             [card]: !prevState[card],
         }));
     }
+
+    const changePages = (page: number) => {
+        setCurrentPage(page);
+    }
+
+    const handleData = async () => {
+        try {
+            const res = await getBookApi(currentPage);
+            if (res.success) {
+                setData(res.data);
+                setTotalPage(res.totalPage);
+            }
+        } catch (error: any) {
+            toast.error(error.message, {
+                position: "top-center",
+            });
+        }
+    }
+
+    const handleNavigate = (bookName: string) => {
+        navigate(`/admin/operation/${bookName}`);
+    }
+
+    useEffect(() => {
+        handleData();
+    }, [currentPage])
+
     return (
         <div>
+            <ToastContainer />
             <div className='min-h-screen'>
                 {
                     isNavbar &&
@@ -60,19 +96,19 @@ const Home: React.FC = () => {
                     )
                 }
                 <div className="grid lg:grid-cols-3 md:grid-cols-2 ml-20 sm:grid-cols-2 mr-20 mt-10 mb-10 gap-y-10 ">
-                    <Card1 name='A song of ice and fire' authorName='George R. R. Martin' currenAvilibility={10}></Card1>
-                    <Card1 name='A song of ice and fire' authorName='George R. R. Martin' currenAvilibility={10}></Card1>
-                    <Card1 name='A song of ice and fire' authorName='George R. R. Martin' currenAvilibility={10}></Card1>
-                    <Card1 name='A song of ice and fire' authorName='George R. R. Martin' currenAvilibility={10}></Card1>
-                    <Card1 name='A song of ice and fire' authorName='George R. R. Martin' currenAvilibility={10}></Card1>
-                    <Card1 name='A song of ice and fire' authorName='George R. R. Martin' currenAvilibility={10}></Card1>
-                    <Card1 name='A song of ice and fire' authorName='George R. R. Martin' currenAvilibility={10}></Card1>
-                    <Card1 name='A song of ice and fire' authorName='George R. R. Martin' currenAvilibility={10}></Card1>
-                    <Card1 name='A song of ice and fire' authorName='George R. R. Martin' currenAvilibility={10}></Card1>
+                    {
+                        data.map((d: any) => (
+                            <div onClick={() => handleNavigate(d.name)} className='cursor-pointer'>
+                                <Card1 name={d.name} authorName={d.author} currenAvilibility={d.currentAvailability
+                                }></Card1>
+                            </div>
+
+                        ))
+                    }
                 </div>
             </div>
             <div className='flex justify-center mt-5'>
-                <Pagination currentPage={1} totalPage={5}></Pagination>
+                <Pagination currentPage={currentPage} totalPages={totalPage} changePage={changePages}></Pagination>
             </div>
             <Footer></Footer>
         </div>

@@ -13,7 +13,7 @@ const libraryTransactionSchema = new mongoose.Schema({
     },
     transactionType: {
         type: String,
-        enum: ['borrowed', 'returned'],
+        enum: ['issue', 'returned'],
         required: true
     },
     dueDate: {
