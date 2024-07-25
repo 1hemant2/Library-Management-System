@@ -9,27 +9,6 @@ interface Card1Props {
 
 
 const Card1: React.FC<Card1Props> = ({ name, authorName, currenAvilibility }) => {
-    // const navigate = useNavigate();
-    // function handleAction(action: string) {
-    //     switch (action) {
-    //         case 'uploadPdf':
-    //             if (fn) {
-    //                 fn();
-    //             }
-    //             break;
-    //         case 'viewPdf':
-    //             navigate('/dr/available-pdf');
-    //             break;
-    //         case 'avilablePatients':
-    //             navigate('/dr/available-patient')
-    //             break;
-    //         case 'assignPatients':
-    //             navigate('/dr/assigned-patient')
-    //             break;
-    //         default:
-    //             break;
-    //     }
-    // }
     return (
         <div className="p-4 border border-gray-300 shadow-xl rounded-lg w-[90%]  h-50 relative">
             <div className="flex justify-center">

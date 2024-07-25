@@ -54,7 +54,6 @@ const Card6: React.FC = () => {
                 throw res;
             }
         } catch (error: any) {
-            console.log(error);
             toast.error(error.message, {
                 position: "top-center",
             });

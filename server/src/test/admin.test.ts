@@ -1,10 +1,11 @@
-import { createAdmin, getAdmin } from '../controller/adminController';
+import { createAdmin, getAdmin, varifyAdmin } from '../controller/adminController';
 import { Admin } from '../model/Admin';
 import { Request, Response } from 'express';
 import { mockRequest, mockResponse } from 'jest-mock-req-res';
 import bcrypt from 'bcrypt';
 import { StatusCodes } from 'http-status-codes';
 import jwt from 'jsonwebtoken'
+
 
 
 jest.mock('../model/Admin');
@@ -42,11 +43,16 @@ describe('Admin Controller -createAdmin', () => {
         });
     });
 
-    // it('should return 400 if body is empty'), async () => {
-    //     const req = mockRequest({});
-    //     const res = mockResponse();
-    //     Admin
-    // }
+    it('should return 400 if body is empty', async () => {
+        const req = mockRequest({ body: {} });
+        const res = mockResponse();
+        await createAdmin(req as Request, res as Response);
+        expect(res.status).toHaveBeenCalledWith(StatusCodes.BAD_REQUEST);
+        expect(res.send).toHaveBeenCalledWith({
+            message: 'Body should not be empty',
+            success: false
+        });
+    });
 
     it('should return 409 if admin already exists', async () => {
         const req = mockRequest({
@@ -143,7 +149,7 @@ describe('Admin Controller - getAdmin', () => {
 
         expect(res.status).toHaveBeenCalledWith(StatusCodes.UNAUTHORIZED);
         expect(res.send).toHaveBeenCalledWith({
-            message: 'Invalid email or password.',
+            message: 'Invalid credential.',
             success: false
         });
     });
@@ -171,6 +177,85 @@ describe('Admin Controller - getAdmin', () => {
         Admin.findOne = jest.fn().mockRejectedValue(new Error('Unexpected error'));
 
         await getAdmin(req as Request, res as Response);
+
+        expect(res.status).toHaveBeenCalledWith(StatusCodes.INTERNAL_SERVER_ERROR);
+        expect(res.send).toHaveBeenCalledWith({
+            message: 'Unexpected error',
+            success: false
+        });
+    });
+});
+describe('Admin Controller - varify admin', () => {
+    afterEach(() => {
+        jest.clearAllMocks();
+    });
+
+    it('should return 200 and a token when credentials are correct', async () => {
+        const req = mockRequest({
+            body: {
+                "email": "testa1@gmail.com",
+                "password": "1234"
+            }
+        });
+        const res = mockResponse();
+
+
+        Admin.findById = jest.fn().mockResolvedValue({});
+
+
+        await varifyAdmin(req as Request, res as Response);
+
+        expect(res.status).toHaveBeenCalledWith(StatusCodes.OK);
+        expect(res.send).toHaveBeenCalledWith(
+            { message: 'Admin exist', success: true }
+        );
+    });
+
+    it('should return 404 if admin does not exist', async () => {
+        const req = mockRequest({});
+        const res = mockResponse();
+
+        Admin.findOne = jest.fn().mockResolvedValue(null);
+
+        await varifyAdmin(req as Request, res as Response);
+
+        expect(res.status).toHaveBeenCalledWith(StatusCodes.NOT_FOUND);
+        expect(res.send).toHaveBeenCalledWith({
+            message: "admin doen't exist",
+            success: false
+        });
+    });
+
+    it('should return 401 if password is incorrect', async () => {
+        const req = mockRequest({
+            body: {
+                "email": "testa1@gmail.com",
+                "password": "wrongpassword"
+            }
+        });
+        const res = mockResponse();
+        Admin.findById = jest.fn().mockResolvedValue(null);
+        await varifyAdmin(req as Request, res as Response);
+        expect(res.status).toHaveBeenCalledWith(StatusCodes.NOT_FOUND);
+        expect(res.send).toHaveBeenCalledWith({
+            message: "admin doen't exist",
+            success: false
+        });
+    });
+
+
+    it('should return 500 if an unexpected error occurs', async () => {
+        const req = mockRequest({
+            body: {
+                "email": "testa1@gmail.com",
+                "password": "1234"
+            }
+        });
+        const res = mockResponse();
+
+        Admin.findById = jest.fn().mockRejectedValue(new Error('Unexpected error'));
+
+        await varifyAdmin(req as Request, res as Response);
 
         expect(res.status).toHaveBeenCalledWith(StatusCodes.INTERNAL_SERVER_ERROR);
         expect(res.send).toHaveBeenCalledWith({

@@ -113,7 +113,7 @@ const Home: React.FC = () => {
                 <div className="grid lg:grid-cols-3 md:grid-cols-2 ml-20 sm:grid-cols-2 mr-20 mt-10 mb-10 gap-y-10 ">
                     {
                         data.map((d: any) => (
-                            <div onClick={() => handleNavigate(d.name)} className='cursor-pointer'>
+                            <div onClick={() => handleNavigate(d.name)} className='cursor-pointer' key={d._id}>
                                 <Card1 name={d.name} authorName={d.author} currenAvilibility={d.currentAvailability
                                 }></Card1>
                             </div>

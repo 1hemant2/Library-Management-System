@@ -2,10 +2,11 @@ import { Book } from "../model/Book";
 import { Request, Response } from "express";
 import { StatusCodes } from "http-status-codes";
 import { mockRequest, mockResponse } from "jest-mock-req-res";
-import { addBook, deleteBook, getBooks, searchBook } from "../controller/bookController";
+import { addBook, deleteBook, getBooks, issueBook, searchBook, returnBook } from "../controller/bookController";
+import { createTransaction } from "../controller/transactionController";
 
 jest.mock('../model/Book');
-
+jest.mock('../controller/transactionController');
 describe('Book controller -addBook', () => {
     afterEach(() => {
         jest.clearAllMocks();
@@ -154,7 +155,7 @@ describe('Book controller -deleteBook', () => {
     })
     it('should return 200 if the book is deleted successfully', async () => {
         const req = mockRequest({
-            body: {
+            params: {
                 name: "A Song of Ice and Fire",
             }
         });
@@ -186,7 +187,7 @@ describe('Book controller -deleteBook', () => {
 
     it('should return 404 if the book is not found', async () => {
         const req = mockRequest({
-            body: {
+            params: {
                 name: "Non-existent Book",
             }
         });
@@ -229,17 +230,25 @@ describe('Book controller -getBook', () => {
         const res = mockResponse();
         const mockBookFind = {
             skip: jest.fn().mockReturnThis(),
-            limit: jest.fn().mockResolvedValue([{}, {}])
+            limit: jest.fn().mockResolvedValue([])
         };
         (Book.find as jest.Mock).mockReturnValue(mockBookFind);
+
+        const mockCountDocuments = jest.fn().mockResolvedValue(12);
+        (Book.countDocuments as jest.Mock).mockImplementation(mockCountDocuments);
+
         await getBooks(req as Request, res as Response);
+
         expect(res.status).toHaveBeenCalledWith(StatusCodes.OK);
         expect(res.send).toHaveBeenCalledWith({
             message: "all the book are here",
+            data: [],
             success: true,
-            data: [{}, {}]
+            totalPage: 1
         });
     });
+
+
     it('should return 400 if page are not  found or less than 1', async () => {
         const req = mockRequest({ params: { pageNo: '0' } });
         const res = mockResponse();
@@ -274,13 +283,15 @@ describe('Book controller -getBook', () => {
         });
     });
 })
+
+
 describe('Book controller -searchBook', () => {
     afterEach(() => {
         jest.clearAllMocks();
     })
     it('should return 200 if books are found', async () => {
         const req = mockRequest({
-            body: {
+            params: {
                 name: "A Song of Ice and Fire",
             }
         });
@@ -309,10 +320,11 @@ describe('Book controller -searchBook', () => {
     });
 
     it('should return 500 if an unexpected error occurs', async () => {
-        const req = mockRequest({ body: { name: "A Song of Ice and Fire", } });
+        const req = mockRequest({ params: { name: "A Song of Ice and Fire" } });
         const res = mockResponse();
 
         (Book.find as jest.Mock).mockRejectedValue(new Error('Something went wrong'));
+
         await searchBook(req as Request, res as Response);
 
         expect(res.status).toHaveBeenCalledWith(StatusCodes.INTERNAL_SERVER_ERROR);
@@ -323,4 +335,156 @@ describe('Book controller -searchBook', () => {
     });
 })
 
+describe('Book controller -issueBook', () => {
+    afterEach(() => {
+        jest.clearAllMocks();
+    })
+    it('should return 200 and issue the book if available', async () => {
+        const req = mockRequest({
+            body: {
+                bookName: "The Great Gatsby",
+                usernamme: 'testu1'
+            }
+        });
+        const res = mockResponse();
 
+        // Mock createTransaction to return success
+        (createTransaction as jest.Mock).mockResolvedValue({ success: true });
+
+        // Mock Book.findOne to return a book with availability
+        (Book.findOne as jest.Mock).mockResolvedValue({
+            currentAvailability: 5,
+            save: jest.fn().mockResolvedValue({})
+        });
+
+        await issueBook(req as Request, res as Response);
+
+        expect(res.status).toHaveBeenCalledWith(StatusCodes.OK);
+        expect(res.send).toHaveBeenCalledWith({
+            message: "Book issued",
+            success: true,
+            currentAvailability: 4
+        });
+    });
+
+    it('should return 404 if the book is not found', async () => {
+        const req = mockRequest({
+            bookName: "Unknown Book",
+            username: 'testu1'
+        });
+        const res = mockResponse();
+
+        (createTransaction as jest.Mock).mockResolvedValue({ success: true });
+
+        (Book.findOne as jest.Mock).mockResolvedValue(null);
+
+        await issueBook(req as Request, res as Response);
+
+        expect(res.status).toHaveBeenCalledWith(StatusCodes.NOT_FOUND);
+        expect(res.send).toHaveBeenCalledWith({
+            message: 'Book not found',
+            success: false
+        });
+    });
+    it('should return 409 if the book is not available', async () => {
+        const req = mockRequest({
+            bookName: "The Great Gatsby"
+        });
+        const res = mockResponse();
+
+        (createTransaction as jest.Mock).mockResolvedValue({ success: true });
+
+        (Book.findOne as jest.Mock).mockResolvedValue({
+            currentAvailability: 0,
+            save: jest.fn().mockResolvedValue({})
+        });
+
+        await issueBook(req as Request, res as Response);
+
+        expect(res.status).toHaveBeenCalledWith(StatusCodes.CONFLICT);
+        expect(res.send).toHaveBeenCalledWith({
+            message: 'Book is not available',
+            success: false
+        });
+    });
+
+    it('should return 500 if transaction creation fails', async () => {
+        const req = mockRequest({
+            bookName: "The Great Gatsby"
+        });
+        const res = mockResponse();
+
+        (createTransaction as jest.Mock).mockResolvedValue({ success: false });
+
+        await issueBook(req as Request, res as Response);
+
+        expect(res.status).toHaveBeenCalledWith(StatusCodes.INTERNAL_SERVER_ERROR);
+        expect(res.send).toHaveBeenCalledWith({
+            message: "something went wrong",
+            success: false
+        });
+    });
+
+})
+
+
+describe('returnBook API', () => {
+    it('should return 200 and update the book availability if the book exists', async () => {
+        const req = mockRequest({
+            bookName: "The Great Gatsby"
+        });
+        const res = mockResponse();
+
+        (createTransaction as jest.Mock).mockResolvedValue({ success: true });
+
+        (Book.findOne as jest.Mock).mockResolvedValue({
+            currentAvailability: 5,
+            save: jest.fn().mockResolvedValue({})
+        });
+
+        await returnBook(req as Request, res as Response);
+
+        expect(res.status).toHaveBeenCalledWith(StatusCodes.OK);
+        expect(res.send).toHaveBeenCalledWith({
+            message: "Book returned",
+            success: true,
+            currentAvailability: 6
+        });
+    });
+
+    it('should return 404 if the book is not found', async () => {
+        const req = mockRequest({
+            bookName: "Unknown Book"
+        });
+        const res = mockResponse();
+
+        (createTransaction as jest.Mock).mockResolvedValue({ success: true });
+
+        (Book.findOne as jest.Mock).mockResolvedValue(null);
+
+        await returnBook(req as Request, res as Response);
+
+        expect(res.status).toHaveBeenCalledWith(StatusCodes.NOT_FOUND);
+        expect(res.send).toHaveBeenCalledWith({
+            message: 'Book not found',
+            success: false
+        });
+    });
+
+    it('should return 500 if transaction creation fails', async () => {
+        const req = mockRequest({
+            bookName: "The Great Gatsby"
+        });
+        const res = mockResponse();
+
+        (createTransaction as jest.Mock).mockResolvedValue({ success: false });
+
+        await returnBook(req as Request, res as Response);
+
+        expect(res.status).toHaveBeenCalledWith(StatusCodes.INTERNAL_SERVER_ERROR);
+        expect(res.send).toHaveBeenCalledWith({
+            message: "something went wrong",
+            success: false
+        });
+    });
+});

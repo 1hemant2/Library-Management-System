@@ -37,7 +37,6 @@ const Card3: React.FC<Card3Props> = ({ name }) => {
         e.preventDefault();
         try {
             const res = await bookAvailablityApi(data);
-            console.log(res);
             if (res.success) {
                 toast.success(res.message, {
                     position: "top-center",

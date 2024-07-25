@@ -13,7 +13,6 @@ const History: React.FC = () => {
     const handleData = async () => {
         try {
             const res = await historyApi(user);
-            console.log(res);
             if (res.success) {
                 setData(res.data);
             }
@@ -24,7 +23,6 @@ const History: React.FC = () => {
         }
     }
     const searchUser = (input: string) => {
-        console.log(input);
         setUser(input);
         handleData();
     }
@@ -48,7 +46,7 @@ const History: React.FC = () => {
                         {
                             data?.map((d: any) => (
                                 <tr>
-                                    <td className="py-2 px-4 border-b">{d?.book.name}</td>
+                                    <td className="py-2 px-4 border-b">{d?.book?.name}</td>
                                     <td className="py-2 px-4 border-b">{d?.dueDate}</td>
                                     <td className="py-2 px-4 border-b">{d.transactionType}</td>
                                 </tr>

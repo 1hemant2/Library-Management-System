@@ -41,9 +41,7 @@ const Card5: React.FC = () => {
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         try {
-            console.log('Data being sent:', data); // Log data here
             const res = await createUserApi(data);
-            console.log(res);
             if (res.success) {
                 setData({
                     username: "",

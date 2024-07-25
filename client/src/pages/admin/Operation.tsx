@@ -24,7 +24,6 @@ const Operation: React.FC = () => {
             const res = await bookDetailApi(name);
             if (res.success) {
                 setData(res.data);
-                console.log(res);
             }
         } catch (error: any) {
             toast.error(error.message, {

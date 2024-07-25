@@ -11,11 +11,11 @@ const Protected: React.FC<ProtectedProps> = ({ children }) => {
     const varify = async () => {
         try {
             const res = await varifyAdminApi();
-            console.log(res);
             if (!res.success) {
                 navigate('/');
             }
         } catch (error) {
+            localStorage.removeItem('token');
             navigate('/');
         }
     }

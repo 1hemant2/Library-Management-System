@@ -35,7 +35,6 @@ const Home: React.FC = () => {
     }
     const changePages = (page: number) => {
         setCurrentPage(page);
-        console.log(page);
     }
 
     const handleData = async () => {
@@ -68,14 +67,17 @@ const Home: React.FC = () => {
                 <div className="grid lg:grid-cols-3 md:grid-cols-2 ml-20 sm:grid-cols-2 mr-20 mt-10 mb-10 gap-y-10 ">
                     {
                         data.map((d: any) => (
-                            <Card1 name={d.name} authorName={d.author} currenAvilibility={d.currentAvailability
-                            }></Card1>
+                            <div key={d._id}>
+                                <Card1 name={d.name} authorName={d.author} currenAvilibility={d.currentAvailability
+                                }></Card1>
+                            </div>
+
                         ))
                     }
                     {
                         data.length === 0 &&
                         <>
-                            <span className='text-2xl'>No match found</span>
+                            <span className='text-2xl'>No Book found</span>
                             <img src={img1} alt="" className='w-[70%] h-[70%]' />
                         </>
 

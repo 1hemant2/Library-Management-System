@@ -54,12 +54,10 @@ export const createTransaction = async (req: Request, res: Response) => {
             dueDate: dueDate
         });
         await transaction.save();
-        // console.log(book, user.transaction, d._id);
         user.transaction.push(transaction._id);
         await user.save();
         return ({ message: `transaction completed`, success: true });
     } catch (error: any) {
-        // const statusCode = error.statusCode || StatusCodes.INTERNAL_SERVER_ERROR;
         const message = error.message || 'something went wrong';
         return ({ success: false, message: message });
     }
@@ -87,28 +85,30 @@ export const createTransaction = async (req: Request, res: Response) => {
 export const userTransaction = async (req: Request, res: Response) => {
     try {
         const input = req.params;
-        if (Object.keys(input).length > 0) {
-            const user = await User.findOne({ $or: [{ email: input.user }, { username: input.user }] }).populate({
-                path: 'transaction',
-                populate: [
-                    {
-                        path: 'book',
-                        select: 'name author'
-                    }
-                ]
-            });
-
-            if (user) {
-                return res.status(StatusCodes.CREATED).send({ success: true, message: "all the data related to user", data: user.transaction })
-            } else {
-                throw { statusCode: StatusCodes.CONFLICT, message: 'User does not exists' };
-            }
-        } else {
+        if (Object.keys(input).length === 0) {
             throw { statusCode: StatusCodes.BAD_REQUEST, message: 'Input is required' }
         }
+
+        const user = await User.findOne({ $or: [{ email: input.user }, { username: input.user }] }).populate({
+            path: 'transaction',
+            populate: [
+                {
+                    path: 'book',
+                    select: 'name author'
+                }
+            ]
+        });
+
+        if (user) {
+            return res.status(StatusCodes.OK).send({ success: true, message: "User history", data: user.transaction })
+        } else {
+            throw { statusCode: StatusCodes.NOT_FOUND, message: 'User does not exists' };
+        }
     } catch (error: any) {
+        console.log(error);
         const statusCode = error.statusCode || StatusCodes.INTERNAL_SERVER_ERROR;
         const message = error.message || "Something went wrong";
         res.status(statusCode).send({ message: message, success: false });
     }
 }
+
