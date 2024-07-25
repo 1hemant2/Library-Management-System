@@ -9,7 +9,6 @@ interface userPayload {
 
 export const createUserApi = async (payload: userPayload) => {
     try {
-        console.log(payload);
         const res = await axiosInstances.post('user/register', payload);
         return res.data;
     } catch (error: any) {
